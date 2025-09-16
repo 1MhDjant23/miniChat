@@ -3,9 +3,6 @@
 #include <iostream>
 #include <vector>
 #include <sys/socket.h>
-#include <cstring>
 #include <cerrno>
-#include <netinet/in.h>
-#include <cstdlib>
 
 #define PORT 8080

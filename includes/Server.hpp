@@ -4,9 +4,12 @@
 
 class Server {
     private:
-        std::vector<int> _sockets;
-public:
-    void    bindingSock() const;
-    Server(); // set up the def sockets for listening.
-    ~Server();
+        std::vector<int> _socketsFd;
+    public:
+        Server(){};
+        void    init();
+        void    bindSock() const;
+        void    listenOnPort();
+        void    acceptConnection();
+        ~Server(){};
 };
