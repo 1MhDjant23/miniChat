@@ -13,6 +13,7 @@ void    Server::init() {
     }
     std::cout << "socket fd is: " << fd << std::endl;
     _socketsFd.push_back(fd);
+    fcntl(server_fd, F_SETFL, O_NONBLOCK); // make this socket as non-blocking I/O. 
 }
 
 void    Server::bindSock() const {
@@ -62,9 +63,19 @@ void    Server::acceptConnection()
             exit(1);
         }
         std::cout << "a client detected" << std::endl;
-        byte = recv(clientFd, buffer, sizeof(buffer), 0);
-        buffer[byte] = '\0';
-        std::cout << "buffer is: " << buffer << std::endl;
+        while ((byte = recv(clientFd, buffer, sizeof(buffer), 0)) > 0)
+        {
+            buffer[byte] = '\0';
+            std::cout << "buffer is: " << buffer << std::endl;
+        }
+        if (byte == 0)
+        {
+            std::cout << "connection closed by client: " << clientFd << std::endl;
+        }
+        if (byte == -1)
+        {
+            close(clientFd);
+            std::cerr << "fail receiving from client: " << strerror(errno) << std::endl;
+        }
     }
-    
 }
