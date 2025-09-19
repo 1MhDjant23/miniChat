@@ -3,6 +3,8 @@
 #include <cstring>
 #include <cstdlib>
 #include <unistd.h>
+#include <poll.h>
+#include <fcntl.h>
 
 void    Server::init() {
     int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -13,7 +15,8 @@ void    Server::init() {
     }
     std::cout << "socket fd is: " << fd << std::endl;
     _socketsFd.push_back(fd);
-    fcntl(server_fd, F_SETFL, O_NONBLOCK); // make this socket as non-blocking I/O. 
+    int flags = fcntl(_socketsFd[0], F_GETFL, 0);
+    fcntl(_socketsFd[0], F_SETFL, flags | O_NONBLOCK); // make this socket as non-blocking I/O. 
 }
 
 void    Server::bindSock() const {
@@ -44,6 +47,31 @@ void    Server::listenOnPort()
         exit(1);
     }
     std::cout << "server listen on 8080" << std::endl;
+}
+
+void    Server::pollingForConnection() {
+    struct  pollfd  pollFd[MAX_CONNECTION];
+    nfds_t          nfds = 1;
+    int             ret;
+
+    pollFd[0].fd = _socketsFd[0];
+    pollFd[0].events = POLLIN;
+
+    while (true)
+    {
+        ret = poll(pollFd, nfds, -1);
+        if (ret > 0)
+        {
+            for (size_t i = 0; i < nfds; i++)
+            {
+                
+            }
+            
+            
+        }
+        
+
+    }
 }
 
 void    Server::acceptConnection()
