@@ -6,7 +6,8 @@ int main()
     server.init(); //creating sockets;
     server.bindSock();
     server.listenOnPort();
-    server.acceptConnection();
+    // server.acceptConnection();
+    server.pollingForConnection();
     // while (true)
     // {
 
